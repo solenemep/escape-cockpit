@@ -12,7 +12,7 @@ import {
   Vector3,
 } from '@babylonjs/core'
 import '@babylonjs/loaders/glTF'
-import type { CityConfig } from '../cities'
+import type { CityConfig } from '../config/cityConfig'
 
 const YAW_LIMIT = Math.PI / 6 // ±30°
 const ALPHA = -Math.PI / 2
@@ -57,6 +57,8 @@ function CockpitScene({ city }: CockpitSceneProps) {
     camera.upperAlphaLimit = ALPHA + YAW_LIMIT
     camera.lowerBetaLimit = BETA
     camera.upperBetaLimit = BETA
+    camera.lowerRadiusLimit = RADIUS
+    camera.upperRadiusLimit = RADIUS
 
     new HemisphericLight('light', new Vector3(0, 1, 0), scene)
 

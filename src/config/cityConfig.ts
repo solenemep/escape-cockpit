@@ -55,14 +55,3 @@ export const CITIES: CityConfig[] = [
     palette: { primary: '#7D6608', accent: '#2980B9', background: '#212F3D' },
   },
 ]
-
-export function pickRandomCity(): CityConfig {
-  return CITIES[Math.floor(Math.random() * CITIES.length)]
-}
-
-export function getDecoys(cityId: CityId): Array<{ code: string; skyline: string }> {
-  return CITIES.filter((city) => city.id !== cityId).map((city) => ({
-    code: city.airportCode,
-    skyline: city.skyline,
-  }))
-}
