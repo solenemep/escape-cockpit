@@ -22,7 +22,7 @@ export const HINTS: Record<GameStep, string> = {
   airport: 'Get airport code',
   eta: 'Calculate ETA',
   runway: 'Find runway number',
-  combine: 'Input landing data XXX-XX:XX-XX',
+  combine: 'Input landing data',
   won: 'Welcome to {city}',
   game_over: 'The plane is out of control.',
 }

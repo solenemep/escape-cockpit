@@ -1,13 +1,14 @@
 import type { CityConfig } from '../config/cityConfig'
 import ResetButton from './ResetButton'
 
-interface GameOverScreenProps {
+interface EndScreenProps {
+  title: string
   hint: string
   palette: CityConfig['palette']
   onReset: () => void
 }
 
-function GameOverScreen({ hint, palette, onReset }: GameOverScreenProps) {
+function EndScreen({ title, hint, palette, onReset }: EndScreenProps) {
   return (
     <div
       style={{
@@ -23,11 +24,11 @@ function GameOverScreen({ hint, palette, onReset }: GameOverScreenProps) {
         fontFamily: 'monospace',
       }}
     >
-      <h1>GAME OVER</h1>
+      <h1>{title}</h1>
       <p>{hint}</p>
       <ResetButton palette={palette} onReset={onReset} />
     </div>
   )
 }
 
-export default GameOverScreen
+export default EndScreen

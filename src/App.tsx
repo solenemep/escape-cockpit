@@ -2,13 +2,14 @@ import { useGameState } from './gameState'
 import CockpitScene from './scene/CockpitScene'
 import FieldGrid from './components/FieldGrid'
 import HintConsole from './components/HintConsole'
-import GameOverScreen from './components/GameOverScreen'
+import EndScreen from './components/EndScreen'
 import ResetButton from './components/ResetButton'
 import TimerCountdown from './components/TimerCountdown'
 import PuzzleInput from './components/PuzzleInput'
 import MapPostIt from './components/MapPostIt'
 import Calculator from './components/Calculator'
 import RunwayPuzzle from './components/RunwayPuzzle'
+import IntroBanner from './components/IntroBanner'
 
 function App() {
   const {
@@ -21,6 +22,7 @@ function App() {
     submitAirportCode,
     submitEta,
     submitRunway,
+    submitCombine,
     resetCount,
     reset,
   } = useGameState()
@@ -28,6 +30,8 @@ function App() {
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <CockpitScene city={city} />
+
+      <IntroBanner palette={city.palette} />
 
       <div
         style={{
@@ -60,6 +64,9 @@ function App() {
           <PuzzleInput palette={city.palette} placeholder="ETA HH:MM" onSubmit={submitEta} />
         )}
         {step === 'runway' && <RunwayPuzzle city={city} onSolve={submitRunway} />}
+        {step === 'combine' && (
+          <PuzzleInput palette={city.palette} placeholder="XXX-XX:XX-XX" onSubmit={submitCombine} />
+        )}
       </HintConsole>
 
       <FieldGrid fields={auxFieldStatuses} palette={city.palette} style={{ right: 180 }} />
@@ -70,8 +77,12 @@ function App() {
         style={{ position: 'absolute', bottom: 30, right: 16 }}
       />
 
+      {step === 'won' && (
+        <EndScreen title="LANDED" hint={hint} palette={city.palette} onReset={reset} />
+      )}
+
       {step === 'game_over' && (
-        <GameOverScreen hint={hint} palette={city.palette} onReset={reset} />
+        <EndScreen title="GAME OVER" hint={hint} palette={city.palette} onReset={reset} />
       )}
     </div>
   )

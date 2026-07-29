@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { pickRandomCity, computeEta, computeRunway } from './config/cityConfig'
+import { pickRandomCity, computeEta, computeRunway, computeCombine } from './config/cityConfig'
 import {
   TIMER_SECONDS,
   REQUIRED_FIELDS,
@@ -57,28 +57,38 @@ export function useGameState() {
     setStep(next ? next.activeStep : 'won')
   }
 
-  function submitAirportCode(code: string): boolean {
-    if (step !== 'airport') return false
-    const correct = code.trim().toUpperCase() === city.airportCode
-    if (correct) {
-      setDistanceRemaining(city.distanceRemaining)
-      advanceStep('airport', city.airportCode)
+  function submitAnswer(
+    forStep: GameStep,
+    value: string,
+    isCorrect: boolean,
+    onCorrect?: () => void,
+  ): boolean {
+    if (step !== forStep) return false
+    if (isCorrect) {
+      onCorrect?.()
+      advanceStep(forStep, value)
     }
-    return correct
+    return isCorrect
+  }
+
+  function submitAirportCode(code: string): boolean {
+    return submitAnswer('airport', city.airportCode, code.trim().toUpperCase() === city.airportCode, () =>
+      setDistanceRemaining(city.distanceRemaining),
+    )
   }
 
   function submitEta(value: string): boolean {
-    if (step !== 'eta') return false
     const expected = computeEta(city)
-    const correct = isCloseTime(value, expected, 1)
-    if (correct) advanceStep('eta', expected)
-    return correct
+    return submitAnswer('eta', expected, isCloseTime(value, expected, 1))
   }
 
   function submitRunway(): boolean {
-    if (step !== 'runway') return false
-    advanceStep('runway', computeRunway(city))
-    return true
+    return submitAnswer('runway', computeRunway(city), true)
+  }
+
+  function submitCombine(value: string): boolean {
+    const expected = computeCombine(city)
+    return submitAnswer('combine', expected, value.trim().toUpperCase() === expected.toUpperCase())
   }
 
   const requiredFieldStatuses: Array<{ label: string; status: DataStatus; value?: string }> =
@@ -110,6 +120,7 @@ export function useGameState() {
     submitAirportCode,
     submitEta,
     submitRunway,
+    submitCombine,
     resetCount,
     reset,
   }

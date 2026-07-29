@@ -26,7 +26,7 @@ Each step below should leave the app in a runnable, visibly-working state before
 - [x] **8. Puzzle 3 — Runway**
       Wind arrow indicator + draggable dial. Stability/hold logic against the tolerance window; correct hold auto-fills the runway field and advances to `combine`.
 
-- [ ] **9. Puzzle 4 — Combine + win state**
+- [x] **9. Puzzle 4 — Combine + win state**
       Final code input, validated against the concatenated format. Correct entry unlocks the LAND button; pressing LAND shows the win state.
 
 - [ ] **10. Deploy + README**

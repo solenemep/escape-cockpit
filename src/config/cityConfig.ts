@@ -96,3 +96,8 @@ export function computeRunwayHeading(city: CityConfig): number {
 export function computeRunway(city: CityConfig): string {
   return (computeRunwayHeading(city) / 10).toString().padStart(2, '0')
 }
+
+// airportCode-eta-runway, the final landing code.
+export function computeCombine(city: CityConfig): string {
+  return `${city.airportCode}-${computeEta(city)}-${computeRunway(city)}`
+}
