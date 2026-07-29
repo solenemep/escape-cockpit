@@ -3,6 +3,7 @@ import {
   ArcRotateCamera,
   Engine,
   HemisphericLight,
+  ImportMeshAsync,
   MeshBuilder,
   Scene,
   StandardMaterial,
@@ -10,15 +11,23 @@ import {
   TransformNode,
   Vector3,
 } from '@babylonjs/core'
+import '@babylonjs/loaders/glTF'
 import type { CityConfig } from '../cities'
 
-const YAW_LIMIT = Math.PI / 3 // ±60° from center
+const YAW_LIMIT = Math.PI / 6 // ±30°
 const ALPHA = -Math.PI / 2
-const BETA = Math.PI / 2 // level horizon
+const BETA = Math.PI / 2
 const RADIUS = 0.05 // near-zero: camera sits effectively at the target, not orbiting it
+const FOV = 2.0 // wide FOV so the whole cockpit interior
 
-const BACKGROUND_DISTANCE = 20
-const BACKGROUND_HEIGHT = 20
+// Y/Z (eye height / depth into the seat)
+const COCKPIT_EYE_HEIGHT = -65
+const COCKPIT_EYE_DEPTH = 28
+
+// Keep the background safely behind the full cockpit model.
+// Its height is calculated to fill the wider camera FOV.
+const BACKGROUND_DISTANCE = 1000
+const BACKGROUND_HEIGHT = 2 * BACKGROUND_DISTANCE * Math.tan(FOV / 2) * 1.2
 const BACKGROUND_FOLLOW = 0.9
 
 interface CockpitSceneProps {
@@ -42,10 +51,7 @@ function CockpitScene({ city }: CockpitSceneProps) {
     const camera = new ArcRotateCamera('camera', ALPHA, BETA, RADIUS, pilotSeat, scene)
     cameraRef.current = camera
     camera.attachControl(canvas, true)
-
-    camera.lowerRadiusLimit = camera.radius
-    camera.upperRadiusLimit = camera.radius
-    camera.panningSensibility = 0
+    camera.fov = FOV
 
     camera.lowerAlphaLimit = ALPHA - YAW_LIMIT
     camera.upperAlphaLimit = ALPHA + YAW_LIMIT
@@ -53,6 +59,23 @@ function CockpitScene({ city }: CockpitSceneProps) {
     camera.upperBetaLimit = BETA
 
     new HemisphericLight('light', new Vector3(0, 1, 0), scene)
+
+    let cancelled = false
+    ImportMeshAsync('/models/aircraft-cockpit.glb', scene).then((result) => {
+      if (cancelled) {
+        result.meshes.forEach((mesh) => mesh.dispose())
+        return
+      }
+      const root = result.meshes[0]
+      const { min, max } = root.getHierarchyBoundingVectors()
+      const centerX = (min.x + max.x) / 2
+      root.position.set(-centerX, COCKPIT_EYE_HEIGHT, COCKPIT_EYE_DEPTH)
+
+      // Render the cockpit after the background.
+      result.meshes.forEach((mesh) => {
+        mesh.renderingGroupId = 1
+      })
+    })
 
     engine.runRenderLoop(() => {
       scene.render()
@@ -62,6 +85,7 @@ function CockpitScene({ city }: CockpitSceneProps) {
     window.addEventListener('resize', handleResize)
 
     return () => {
+      cancelled = true
       window.removeEventListener('resize', handleResize)
       cameraRef.current = null
       sceneRef.current = null
@@ -74,8 +98,7 @@ function CockpitScene({ city }: CockpitSceneProps) {
     const camera = cameraRef.current
     if (!scene || !camera) return
 
-    // A pivot at the camera's target, so rotating it swings the plane around
-    // in an arc instead of spinning it in place.
+    // A pivot at the camera's target which rotates the background plane to follow the camera's yaw.
     const pivot = new TransformNode('background-pivot', scene)
 
     const plane = MeshBuilder.CreatePlane(
@@ -85,9 +108,11 @@ function CockpitScene({ city }: CockpitSceneProps) {
     )
     plane.parent = pivot
     plane.position.z = BACKGROUND_DISTANCE
+    plane.renderingGroupId = 0
 
     const material = new StandardMaterial('background-material', scene)
     material.disableLighting = true
+    material.disableDepthWrite = true
     material.backFaceCulling = false
     const texture = new Texture(city.background, scene, undefined, undefined, undefined, () => {
       const size = texture.getSize()
@@ -95,10 +120,6 @@ function CockpitScene({ city }: CockpitSceneProps) {
     })
     material.emissiveTexture = texture
     plane.material = material
-
-    // Snap the view back to center on every city change (including RESET),
-    // rather than keeping wherever the player last looked.
-    camera.alpha = ALPHA
 
     const observer = scene.onBeforeRenderObservable.add(() => {
       pivot.rotation.y = -(camera.alpha - ALPHA) * BACKGROUND_FOLLOW
