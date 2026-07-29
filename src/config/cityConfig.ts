@@ -1,3 +1,5 @@
+import type { DataStatus } from './gameConfig'
+
 export type CityId = 'barcelona' | 'paris' | 'athens'
 
 export interface CityConfig {
@@ -12,9 +14,17 @@ export interface CityConfig {
   windDirection: number // degrees
   palette: {
     primary: string
+    secondary: string
     accent: string
     background: string
   }
+}
+
+export const STATUS_BORDER: Record<DataStatus, keyof CityConfig['palette']> = {
+  locked: 'background',
+  active: 'accent',
+  solved: 'secondary',
+  available: 'primary',
 }
 
 export const CITIES: CityConfig[] = [
@@ -28,7 +38,7 @@ export const CITIES: CityConfig[] = [
     speed: 280,
     currentTime: '14:05',
     windDirection: 90,
-    palette: { primary: '#C0392B', accent: '#F1C40F', background: '#154360' },
+    palette: { primary: '#95A5A6', secondary: '#27AE60', accent: '#F1C40F', background: '#154360' },
   },
   {
     id: 'paris',
@@ -38,9 +48,9 @@ export const CITIES: CityConfig[] = [
     background: '/cities/paris/background.png',
     distanceRemaining: 150,
     speed: 300,
-    currentTime: '22:40',
+    currentTime: '19:40',
     windDirection: 270,
-    palette: { primary: '#2E4053', accent: '#D4AC0D', background: '#1B2631' },
+    palette: { primary: '#7F8C9A', secondary: '#5499C7', accent: '#AED6F1', background: '#1B2631' },
   },
   {
     id: 'athens',
@@ -52,6 +62,17 @@ export const CITIES: CityConfig[] = [
     speed: 260,
     currentTime: '08:20',
     windDirection: 140,
-    palette: { primary: '#7D6608', accent: '#2980B9', background: '#212F3D' },
+    palette: { primary: '#B2BABB', secondary: '#2ECC71', accent: '#2980B9', background: '#212F3D' },
   },
 ]
+
+export function pickRandomCity(): CityConfig {
+  return CITIES[Math.floor(Math.random() * CITIES.length)]
+}
+
+export function getDecoys(cityId: CityId): Array<{ code: string; skyline: string }> {
+  return CITIES.filter((city) => city.id !== cityId).map((city) => ({
+    code: city.airportCode,
+    skyline: city.skyline,
+  }))
+}

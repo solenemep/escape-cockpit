@@ -100,6 +100,8 @@ function CockpitScene({ city }: CockpitSceneProps) {
     const camera = cameraRef.current
     if (!scene || !camera) return
 
+    camera.alpha = ALPHA
+
     // A pivot at the camera's target which rotates the background plane to follow the camera's yaw.
     const pivot = new TransformNode('background-pivot', scene)
 

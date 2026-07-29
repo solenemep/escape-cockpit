@@ -14,10 +14,10 @@ Each step below should leave the app in a runnable, visibly-working state before
 - [x] **4. Cockpit model loaded, camera constrained**
       glTF cockpit model loads into the scene, positioned so the existing skyline plane reads as visible through its window. Camera fixed at the pilot seat, yaw-only rotation clamped to the limited arc, pitch/roll locked. Player can look left/right with the mouse and nothing else.
 
-- [ ] **5. Game state machine + timer + game-over state + hint console + themed Field component**
+- [x] **5. Game state machine + timer + game-over state + hint console + themed Field component**
       `GameState` (steps `airport → eta → runway → combine → won`, plus `game_over`) wired up with the 240s countdown visible on screen. No puzzle UI yet, but the timer hitting 0 shows the game-over screen, the hint console displays the text for `currentStep`, and a shared `Field` component exists with locked/active/solved/error visual states, colored using the current city's `palette` (from step 3).
 
-- [ ] **6. Puzzle 1 — Airport code**
+- [x] **6. Puzzle 1 — Airport code**
       MAP button hotspot opens the skyline+code overlay (correct + decoys). Input field validates against `airportCode`; correct entry shows `distanceRemaining` and advances `currentStep` to `eta`.
 
 - [ ] **7. Puzzle 2 — ETA**

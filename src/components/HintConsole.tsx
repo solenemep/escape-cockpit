@@ -1,11 +1,13 @@
+import type { ReactNode } from 'react'
 import type { CityConfig } from '../config/cityConfig'
 
 interface HintConsoleProps {
   hint: string
   palette: CityConfig['palette']
+  children?: ReactNode
 }
 
-function HintConsole({ hint, palette }: HintConsoleProps) {
+function HintConsole({ hint, palette, children }: HintConsoleProps) {
   if (!hint) return null
 
   return (
@@ -13,16 +15,30 @@ function HintConsole({ hint, palette }: HintConsoleProps) {
       style={{
         position: 'absolute',
         bottom: 16,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        background: palette.background,
-        color: palette.accent,
-        padding: '78px 16px',
-        borderRadius: 4,
-        fontFamily: 'monospace',
+        left: 0,
+        right: 0,
+        display: 'flex',
+        justifyContent: 'center',
       }}
     >
-      {hint}
+      <div
+        style={{
+          width: 140,
+          minHeight: 150,
+          background: palette.background,
+          color: palette.accent,
+          padding: '12px 16px',
+          borderRadius: 4,
+          fontFamily: 'monospace',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+        }}
+      >
+        <div>{hint}</div>
+        {children}
+      </div>
     </div>
   )
 }

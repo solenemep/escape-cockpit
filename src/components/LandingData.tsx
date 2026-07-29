@@ -1,4 +1,4 @@
-import type { CityConfig } from '../config/cityConfig'
+import { STATUS_BORDER, type CityConfig } from '../config/cityConfig'
 import type { DataStatus } from '../config/gameConfig'
 import { panelStyle } from '../styles/panel'
 
@@ -9,16 +9,8 @@ interface LandingDataProps {
   palette: CityConfig['palette']
 }
 
-const STATUS_BORDER: Record<DataStatus, keyof CityConfig['palette'] | string> = {
-  locked: '#555555',
-  active: 'accent',
-  solved: '#2ecc71',
-  error: '#e74c3c',
-}
-
 function LandingData({ label, value, status, palette }: LandingDataProps) {
-  const border = STATUS_BORDER[status]
-  const borderColor = border in palette ? palette[border as keyof CityConfig['palette']] : border
+  const borderColor = palette[STATUS_BORDER[status]]
 
   return (
     <div
