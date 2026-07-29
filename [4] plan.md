@@ -23,7 +23,7 @@ Each step below should leave the app in a runnable, visibly-working state before
 - [x] **7. Puzzle 2 — ETA**
       Read-only `speed`/`currentTime` fields, ETA input field, validated against the derived formula (with tolerance). Correct entry advances to `runway`.
 
-- [ ] **8. Puzzle 3 — Runway**
+- [x] **8. Puzzle 3 — Runway**
       Wind arrow indicator + draggable dial. Stability/hold logic against the tolerance window; correct hold auto-fills the runway field and advances to `combine`.
 
 - [ ] **9. Puzzle 4 — Combine + win state**

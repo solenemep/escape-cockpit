@@ -86,3 +86,13 @@ export function computeEta(city: CityConfig): string {
   const etaMinutes = wrapped % 60
   return `${etaHours.toString().padStart(2, '0')}:${etaMinutes.toString().padStart(2, '0')}`
 }
+
+// windDirection rounded to the nearest 10 degrees — the runway's target heading.
+export function computeRunwayHeading(city: CityConfig): number {
+  return Math.round(city.windDirection / 10) * 10
+}
+
+// runway heading / 10, zero-padded to 2 digits.
+export function computeRunway(city: CityConfig): string {
+  return (computeRunwayHeading(city) / 10).toString().padStart(2, '0')
+}

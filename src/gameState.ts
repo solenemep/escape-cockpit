@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { pickRandomCity, computeEta } from './config/cityConfig'
+import { pickRandomCity, computeEta, computeRunway } from './config/cityConfig'
 import {
   TIMER_SECONDS,
   REQUIRED_FIELDS,
@@ -75,6 +75,12 @@ export function useGameState() {
     return correct
   }
 
+  function submitRunway(): boolean {
+    if (step !== 'runway') return false
+    advanceStep('runway', computeRunway(city))
+    return true
+  }
+
   const requiredFieldStatuses: Array<{ label: string; status: DataStatus; value?: string }> =
     REQUIRED_FIELDS.map((field) => ({
       label: field.label,
@@ -103,6 +109,7 @@ export function useGameState() {
     auxFieldStatuses,
     submitAirportCode,
     submitEta,
+    submitRunway,
     resetCount,
     reset,
   }

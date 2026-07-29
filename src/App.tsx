@@ -8,6 +8,7 @@ import TimerCountdown from './components/TimerCountdown'
 import PuzzleInput from './components/PuzzleInput'
 import MapPostIt from './components/MapPostIt'
 import Calculator from './components/Calculator'
+import RunwayPuzzle from './components/RunwayPuzzle'
 
 function App() {
   const {
@@ -19,6 +20,7 @@ function App() {
     auxFieldStatuses,
     submitAirportCode,
     submitEta,
+    submitRunway,
     resetCount,
     reset,
   } = useGameState()
@@ -57,6 +59,7 @@ function App() {
         {step === 'eta' && (
           <PuzzleInput palette={city.palette} placeholder="ETA HH:MM" onSubmit={submitEta} />
         )}
+        {step === 'runway' && <RunwayPuzzle city={city} onSolve={submitRunway} />}
       </HintConsole>
 
       <FieldGrid fields={auxFieldStatuses} palette={city.palette} style={{ right: 180 }} />
