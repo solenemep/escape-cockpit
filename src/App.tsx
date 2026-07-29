@@ -5,8 +5,9 @@ import HintConsole from './components/HintConsole'
 import GameOverScreen from './components/GameOverScreen'
 import ResetButton from './components/ResetButton'
 import TimerCountdown from './components/TimerCountdown'
-import AirportPuzzle from './components/AirportPuzzle'
+import PuzzleInput from './components/PuzzleInput'
 import MapPostIt from './components/MapPostIt'
+import Calculator from './components/Calculator'
 
 function App() {
   const {
@@ -17,6 +18,8 @@ function App() {
     requiredFieldStatuses,
     auxFieldStatuses,
     submitAirportCode,
+    submitEta,
+    resetCount,
     reset,
   } = useGameState()
 
@@ -48,10 +51,21 @@ function App() {
       <FieldGrid fields={requiredFieldStatuses} palette={city.palette} style={{ left: 180 }} />
 
       <HintConsole hint={hint} palette={city.palette}>
-        <AirportPuzzle city={city} onSubmit={submitAirportCode} />
+        {step === 'airport' && (
+          <PuzzleInput palette={city.palette} placeholder="Airport code" onSubmit={submitAirportCode} />
+        )}
+        {step === 'eta' && (
+          <PuzzleInput palette={city.palette} placeholder="ETA HH:MM" onSubmit={submitEta} />
+        )}
       </HintConsole>
 
       <FieldGrid fields={auxFieldStatuses} palette={city.palette} style={{ right: 180 }} />
+
+      <Calculator
+        key={resetCount}
+        palette={city.palette}
+        style={{ position: 'absolute', bottom: 30, right: 16 }}
+      />
 
       {step === 'game_over' && (
         <GameOverScreen hint={hint} palette={city.palette} onReset={reset} />

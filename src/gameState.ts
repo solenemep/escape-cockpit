@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { pickRandomCity } from './config/cityConfig'
+import { pickRandomCity, computeEta } from './config/cityConfig'
 import {
   TIMER_SECONDS,
   REQUIRED_FIELDS,
@@ -9,12 +9,27 @@ import {
   type DataStatus,
 } from './config/gameConfig'
 
+function parseMinutesOfDay(time: string): number | null {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(time.trim())
+  if (!match) return null
+  return Number(match[1]) * 60 + Number(match[2])
+}
+
+function isCloseTime(a: string, b: string, toleranceMinutes: number): boolean {
+  const minutesA = parseMinutesOfDay(a)
+  const minutesB = parseMinutesOfDay(b)
+  if (minutesA === null || minutesB === null) return false
+  const diff = Math.abs(minutesA - minutesB)
+  return Math.min(diff, 1440 - diff) <= toleranceMinutes
+}
+
 export function useGameState() {
   const [city, setCity] = useState(pickRandomCity)
   const [step, setStep] = useState<GameStep>('airport')
   const [timeRemaining, setTimeRemaining] = useState(TIMER_SECONDS)
   const [answers, setAnswers] = useState<Partial<Record<GameStep, string>>>({})
   const [distanceRemaining, setDistanceRemaining] = useState<number | null>(null)
+  const [resetCount, setResetCount] = useState(0)
 
   useEffect(() => {
     if (step === 'won' || step === 'game_over') return
@@ -32,10 +47,9 @@ export function useGameState() {
     setTimeRemaining(TIMER_SECONDS)
     setAnswers({})
     setDistanceRemaining(null)
+    setResetCount((c) => c + 1)
   }
 
-  // Records the answer for `fromStep` and moves to whichever step follows it in
-  // REQUIRED_FIELDS, or 'won' once the last one (combine) has been answered.
   function advanceStep(fromStep: GameStep, value: string) {
     setAnswers((a) => ({ ...a, [fromStep]: value }))
     const i = REQUIRED_FIELDS.findIndex((field) => field.activeStep === fromStep)
@@ -50,6 +64,14 @@ export function useGameState() {
       setDistanceRemaining(city.distanceRemaining)
       advanceStep('airport', city.airportCode)
     }
+    return correct
+  }
+
+  function submitEta(value: string): boolean {
+    if (step !== 'eta') return false
+    const expected = computeEta(city)
+    const correct = isCloseTime(value, expected, 1)
+    if (correct) advanceStep('eta', expected)
     return correct
   }
 
@@ -80,6 +102,8 @@ export function useGameState() {
     requiredFieldStatuses,
     auxFieldStatuses,
     submitAirportCode,
+    submitEta,
+    resetCount,
     reset,
   }
 }

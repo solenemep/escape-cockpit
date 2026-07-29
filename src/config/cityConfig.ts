@@ -76,3 +76,13 @@ export function getDecoys(cityId: CityId): Array<{ code: string; skyline: string
     skyline: city.skyline,
   }))
 }
+
+// currentTime + distanceRemaining / speed, formatted "HH:MM", wrapping past midnight.
+export function computeEta(city: CityConfig): string {
+  const [hours, minutes] = city.currentTime.split(':').map(Number)
+  const totalMinutes = hours * 60 + minutes + Math.round((city.distanceRemaining / city.speed) * 60)
+  const wrapped = ((totalMinutes % 1440) + 1440) % 1440
+  const etaHours = Math.floor(wrapped / 60)
+  const etaMinutes = wrapped % 60
+  return `${etaHours.toString().padStart(2, '0')}:${etaMinutes.toString().padStart(2, '0')}`
+}

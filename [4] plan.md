@@ -20,7 +20,7 @@ Each step below should leave the app in a runnable, visibly-working state before
 - [x] **6. Puzzle 1 — Airport code**
       MAP button hotspot opens the skyline+code overlay (correct + decoys). Input field validates against `airportCode`; correct entry shows `distanceRemaining` and advances `currentStep` to `eta`.
 
-- [ ] **7. Puzzle 2 — ETA**
+- [x] **7. Puzzle 2 — ETA**
       Read-only `speed`/`currentTime` fields, ETA input field, validated against the derived formula (with tolerance). Correct entry advances to `runway`.
 
 - [ ] **8. Puzzle 3 — Runway**
