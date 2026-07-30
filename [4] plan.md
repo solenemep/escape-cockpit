@@ -29,5 +29,5 @@ Each step below should leave the app in a runnable, visibly-working state before
 - [x] **9. Puzzle 4 — Combine + win state**
       Final code input, validated against the concatenated format. Correct entry unlocks the LAND button; pressing LAND shows the win state.
 
-- [ ] **10. Deploy + README**
+- [x] **10. Deploy + README**
       Deploy to Vercel/Netlify/GitHub Pages. README with local run instructions and the AI-usage note required by the challenge brief.
