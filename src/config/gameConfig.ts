@@ -11,6 +11,12 @@ export interface Field {
   getValue?: (city: CityConfig, distanceRemaining: number | null) => string | undefined
 }
 
+export interface FieldStatus {
+  label: string
+  status: DataStatus
+  value?: string
+}
+
 export const REQUIRED_FIELDS: Field[] = [
   { label: 'airport', activeStep: 'airport' },
   { label: 'eta', activeStep: 'eta' },

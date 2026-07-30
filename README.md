@@ -51,10 +51,12 @@ src/
   gameState.ts           — state machine: step/answers/timer, submitAnswer + one submit* per puzzle
   config/
     cityConfig.ts        — per-city data (CityConfig), palette → status-color map, computeEta/Runway/Combine
-    gameConfig.ts        — GameStep/DataStatus types, REQUIRED_FIELDS + AUX_FIELDS, hint text
+    gameConfig.ts        — GameStep/DataStatus/FieldStatus types, REQUIRED_FIELDS + AUX_FIELDS, hint text
   components/            — presentational pieces: LandingData, FieldGrid, HintConsole, PuzzleInput, RunwayPuzzle, Calculator, MapPostIt, IntroBanner, EndScreen, ResetButton, TimerCountdown
   scene/CockpitScene.tsx — Babylon.js scene: cockpit model, fixed/clamped camera, city skyline background
-  styles/panel.ts        — shared bordered-panel style, palette-driven
+  styles/
+    panel.ts             — shared bordered-panel style, palette-driven
+    field-animations.css — solved-pulse and active-point animations for LandingData fields
 ```
 
 Data flow is one-directional: `CityConfig` (in `cityConfig.ts`) is the single source of truth per destination — it feeds the 3D background, every puzzle's correct answer, and the UI palette. `useGameState()` owns all mutable state and exposes derived, ready-to-render arrays (`requiredFieldStatuses`, `auxFieldStatuses`) plus one `submit*` function per puzzle; `App.tsx` and the components underneath are otherwise stateless, just rendering what the hook gives them.
@@ -64,6 +66,7 @@ Data flow is one-directional: `CityConfig` (in `cityConfig.ts`) is the single so
 - **Stack**: React + TypeScript + Vite, Babylon.js for the 3D cockpit/scene — no game engine needed for a single static scene with a few draggable/clickable UI elements.
 - **One `CityConfig` per destination** instead of separate data files/branches per city: adding a 4th destination is editing one array entry, never touching puzzle logic.
 - **Palette-driven UI, no hardcoded status colors**: each panel's locked/active/solved/available color comes from the current city's palette, so every destination reads as visually distinct without any component knowing city-specific colors.
+- **Animated feedback, not just color**: a field pulses in its own status color the instant it's newly solved, and reference fields get a small moving light while they're the one relevant to the current puzzle — `LandingData` detects both by watching its own `value`/`status` props, no extra game state needed.
 - **2D UI overlay over the 3D canvas**, rather than in-world/billboarded panels: simpler to build and iterate on, and the camera's yaw range is narrow enough that fixed screen-space panels never feel disconnected from the scene.
 
 ## AI usage

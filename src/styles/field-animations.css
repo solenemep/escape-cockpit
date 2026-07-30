@@ -1,0 +1,60 @@
+@keyframes field-fulfilled {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  35% {
+    transform: scale(1.25);
+    box-shadow: 0 0 24px 6px var(--glow-color, white);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+.field-fulfilled {
+  animation: field-fulfilled 0.7s ease-out;
+  position: relative;
+  z-index: 1;
+}
+
+.field-active {
+  position: relative;
+}
+
+.field-active::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fdfdfd;
+  box-shadow: 0 0 6px 2px #fdfdfd;
+  transform: translate(-50%, -50%);
+  animation: border-point 2.4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes border-point {
+  0% {
+    top: 0%;
+    left: 0%;
+  }
+  25% {
+    top: 0%;
+    left: 100%;
+  }
+  50% {
+    top: 100%;
+    left: 100%;
+  }
+  75% {
+    top: 100%;
+    left: 0%;
+  }
+  100% {
+    top: 0%;
+    left: 0%;
+  }
+}

@@ -69,7 +69,12 @@ function App() {
         )}
       </HintConsole>
 
-      <FieldGrid fields={auxFieldStatuses} palette={city.palette} style={{ right: 180 }} />
+      <FieldGrid
+        fields={auxFieldStatuses}
+        palette={city.palette}
+        style={{ right: 180 }}
+        animateActive
+      />
 
       <Calculator
         key={resetCount}

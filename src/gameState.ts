@@ -6,7 +6,7 @@ import {
   HINTS,
   AUX_FIELDS,
   type GameStep,
-  type DataStatus,
+  type FieldStatus,
 } from './config/gameConfig'
 
 function parseMinutesOfDay(time: string): number | null {
@@ -91,24 +91,22 @@ export function useGameState() {
     return submitAnswer('combine', expected, value.trim().toUpperCase() === expected.toUpperCase())
   }
 
-  const requiredFieldStatuses: Array<{ label: string; status: DataStatus; value?: string }> =
-    REQUIRED_FIELDS.map((field) => ({
-      label: field.label,
-      status:
-        field.activeStep === step
-          ? 'active'
-          : answers[field.activeStep] !== undefined
-            ? 'solved'
-            : 'locked',
-      value: answers[field.activeStep],
-    }))
+  const requiredFieldStatuses: FieldStatus[] = REQUIRED_FIELDS.map((field) => ({
+    label: field.label,
+    status:
+      field.activeStep === step
+        ? 'active'
+        : answers[field.activeStep] !== undefined
+          ? 'solved'
+          : 'locked',
+    value: answers[field.activeStep],
+  }))
 
-  const auxFieldStatuses: Array<{ label: string; status: DataStatus; value?: string }> =
-    AUX_FIELDS.map((field) => ({
-      label: field.label,
-      status: step === field.activeStep ? 'active' : 'available',
-      value: field.getValue?.(city, distanceRemaining),
-    }))
+  const auxFieldStatuses: FieldStatus[] = AUX_FIELDS.map((field) => ({
+    label: field.label,
+    status: step === field.activeStep ? 'active' : 'available',
+    value: field.getValue?.(city, distanceRemaining),
+  }))
 
   return {
     city,

@@ -1,15 +1,16 @@
 import type { CSSProperties } from 'react'
 import type { CityConfig } from '../config/cityConfig'
-import type { DataStatus } from '../config/gameConfig'
+import type { FieldStatus } from '../config/gameConfig'
 import LandingData from './LandingData'
 
 interface FieldGridProps {
-  fields: Array<{ label: string; status: DataStatus; value?: string }>
+  fields: FieldStatus[]
   palette: CityConfig['palette']
   style?: CSSProperties
+  animateActive?: boolean
 }
 
-function FieldGrid({ fields, palette, style }: FieldGridProps) {
+function FieldGrid({ fields, palette, style, animateActive }: FieldGridProps) {
   return (
     <div
       style={{
@@ -22,7 +23,14 @@ function FieldGrid({ fields, palette, style }: FieldGridProps) {
       }}
     >
       {fields.map(({ label, status, value }) => (
-        <LandingData key={label} label={label} value={value} status={status} palette={palette} />
+        <LandingData
+          key={label}
+          label={label}
+          value={value}
+          status={status}
+          palette={palette}
+          animateActive={animateActive}
+        />
       ))}
     </div>
   )
